@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import './question.dart';
+import './answer.dart';
 
 void main() => runApp(MyApp());
 
@@ -8,19 +10,33 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var questionIndex = 0;
+  final questions = const [
+    {
+      'questionText': 'What\'s your favourite color?',
+      'answers': ['Black', 'Blue', 'Green', 'Red'],
+    },
+    {
+      'questionText': 'What\'s your favourite animal?',
+      'answers': ['Elephant', 'Lion', 'Cat', 'Dog'],
+    },
+    {
+      'questionText': 'Who\'s your favourite instructor?',
+      'answers': ['Max', 'Angela', 'Ashry', 'Wael'],
+    },
+  ];
+  var _questionIndex = 0;
 
-  void answerQuestion() {
+  void _answerQuestion() {
     setState(() {
-      questionIndex++;
+      _questionIndex++;
     });
-    print(questionIndex);
+    print(_questionIndex);
   }
-
-  var questions = ['What\'s your name?', 'What\'s your favourite color?'];
 
   @override
   Widget build(BuildContext context) {
+    //var questions = ['What\'s your name?', 'What\'s your favourite color?'];
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -29,23 +45,21 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         //body: Text('This is my default text'),
-        body: Column(
-          children: [
-            Text(questions[questionIndex]),
-            RaisedButton(
-              onPressed: answerQuestion,
-              child: Text('Answer 1'),
-            ),
-            RaisedButton(
-              onPressed: answerQuestion,
-              child: Text('Answer 2'),
-            ),
-            RaisedButton(
-              onPressed: answerQuestion,
-              child: Text('Answer 3'),
-            ),
-          ],
-        ),
+        body: _questionIndex < questions.length
+            ? Column(
+                children: [
+                  //Text(questions[_questionIndex]),
+                  Question(
+                    questions[_questionIndex]['questionText'],
+                  ),
+                  ...(questions[_questionIndex]['answers'] as List<String>)
+                      .map((answer) => Answer(_answerQuestion, answer))
+                      .toList(),
+                ],
+              )
+            : Center(
+                child: Text('You did it!'),
+              ),
       ),
     );
   }
